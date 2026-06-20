@@ -10,13 +10,12 @@
   "repository": "https://github.com/Kirchberg/interface-design",
   "license": "MIT",
   "keywords": [
-    "codex",
-    "design-engineering",
-    "design-system",
-    "interface-design",
     "skill",
+    "interface-design",
     "ui",
-    "ux"
+    "ux",
+    "design-system",
+    "design-engineering"
   ],
   "interface": {
     "displayName": "Interface Design",
@@ -36,6 +35,5 @@
       "Use Interface Design to extract a design system from the existing frontend."
     ],
     "brandColor": "#111827"
-  },
-  "skills": "./skills/"
+  }
 }

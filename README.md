@@ -1,10 +1,10 @@
-# Interface Design for Codex
+# Interface Design
 
-Codex-first interface design skills for dashboards, admin panels, SaaS apps, tools, settings pages, data interfaces, and interactive products.
+Interface design skills for dashboards, admin panels, SaaS apps, tools, settings pages, data interfaces, and interactive products.
 
-Interface Design helps Codex make UI choices from product intent instead of generic dashboard defaults. It also keeps decisions in `.interface-design/system.md` so future UI work can reuse the same spacing, depth, tokens, component patterns, and visual direction.
+Interface Design helps coding agents make UI choices from product intent instead of generic dashboard defaults. It also keeps decisions in `.interface-design/system.md` so future UI work can reuse the same spacing, depth, tokens, component patterns, and visual direction.
 
-This fork is adapted for **OpenAI Codex**. Claude Code command/plugin files are not the primary surface.
+The repository uses **one canonical design skill** and publishes it through multiple install surfaces. No supported tool is ranked above another. Codex, Claude Code, and any future integration are install surfaces generated from the same package metadata and skill content.
 
 ## What It Provides
 
@@ -16,24 +16,52 @@ This fork is adapted for **OpenAI Codex**. Claude Code command/plugin files are 
 
 Use this for product UI. Do not use it for landing pages, marketing sites, campaigns, or brand-only exploration.
 
-## What Changed From Upstream
+## One Skill, Multiple Install Surfaces
 
-This fork keeps the upstream craft model and the newer Codex slash-command/image-generation guidance, but packages it for Codex:
+Canonical sources:
 
-- Codex plugin metadata lives in `.codex-plugin/plugin.json`.
-- Repo-local marketplace metadata lives in `.agents/plugins/marketplace.json`.
-- Skills live in `skills/`.
-- Claude Code plugin files are not bundled as the primary install surface.
+- `install-surfaces/manifest.json` - shared package metadata.
+- `skills/interface-design/` - canonical skill content.
+- `skills/interface-design-*` - additional local entrypoints for status, extract, audit, and critique workflows.
+
+Generated install surfaces:
+
+- `.codex-plugin/plugin.json`
+- `.agents/plugins/marketplace.json`
+- `.claude/skills/interface-design/`
+- `.claude/commands/`
+- `.claude-plugin/plugin.json`
+- `.claude-plugin/marketplace.json`
+
+Run this after changing canonical skill content or package metadata:
+
+```bash
+scripts/sync-install-surfaces
+```
+
+Use check mode in CI or before committing:
+
+```bash
+scripts/sync-install-surfaces --check
+```
 
 ## Repository Layout
 
 ```text
 .
+├── install-surfaces/
+│   └── manifest.json
 ├── .codex-plugin/
 │   └── plugin.json
 ├── .agents/
 │   └── plugins/
 │       └── marketplace.json
+├── .claude-plugin/
+│   ├── marketplace.json
+│   └── plugin.json
+├── .claude/
+│   ├── commands/
+│   └── skills/
 ├── skills/
 │   ├── interface-design/
 │   │   ├── SKILL.md
@@ -46,12 +74,14 @@ This fork keeps the upstream craft model and the newer Codex slash-command/image
 ├── reference/
 │   ├── system-template.md
 │   └── examples/
+├── scripts/
+│   └── sync-install-surfaces
 └── AGENTS.md
 ```
 
-## Install For Local Testing
+## Install Surface: Codex
 
-Clone the fork:
+Clone the repository:
 
 ```bash
 git clone https://github.com/Kirchberg/interface-design.git
@@ -60,7 +90,7 @@ cd interface-design
 
 Codex can read the repo-local marketplace at `.agents/plugins/marketplace.json`. Restart Codex from this repository and install the `interface-design` plugin from the local marketplace.
 
-For personal local testing, copy this plugin into a personal plugin folder and point `~/.agents/plugins/marketplace.json` at it:
+For personal local testing, copy this repository into a personal plugin folder and point `~/.agents/plugins/marketplace.json` at it:
 
 ```bash
 mkdir -p ~/.codex/plugins
@@ -95,9 +125,32 @@ Then add a personal marketplace entry like:
 
 Restart Codex after changing marketplace or plugin files. Local plugins are installed into Codex's plugin cache, so edits to the source folder may require reinstalling or refreshing the cached copy.
 
+## Install Surface: Claude Code
+
+For plugin-style local testing, point Claude Code at this repository's `.claude-plugin/marketplace.json` or copy the repository into the plugin location you use for local Claude Code marketplaces.
+
+For manual skill installation:
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R .claude/skills/interface-design ~/.claude/skills/
+```
+
+The generated command wrappers under `.claude/commands/` expose these slash-command entries:
+
+```text
+/interface-design:init
+/interface-design:status
+/interface-design:audit <path>
+/interface-design:extract <path>
+/interface-design:critique <path>
+```
+
+Do not edit generated install-surface files directly. Update `install-surfaces/manifest.json` or `skills/interface-design/`, then run `scripts/sync-install-surfaces`.
+
 ## Use
 
-Ask Codex naturally:
+Ask naturally:
 
 ```text
 Use Interface Design to build the analytics dashboard.
@@ -111,7 +164,7 @@ Audit the settings UI against .interface-design/system.md.
 Extract a design system from src/components and write .interface-design/system.md.
 ```
 
-When your Codex surface supports slash commands or skill mentions, these are equivalent:
+When the current tool supports slash commands or skill mentions, these are equivalent:
 
 ```text
 /interface-design
@@ -125,7 +178,7 @@ You can also explicitly mention skills by name, for example `$interface-design-a
 
 ## How The Main Skill Works
 
-When `interface-design` runs, Codex:
+When `interface-design` runs, the agent:
 
 1. Checks for `.interface-design/system.md`.
 2. Uses saved direction, tokens, depth, spacing, and component patterns when present.
@@ -143,7 +196,7 @@ When `interface-design` runs, Codex:
 
 ## Visual Direction
 
-The main skill can use Codex image generation as a design companion when useful. Generated images are references, not implementation.
+The main skill can use image generation as a design companion when useful. Generated images are references, not implementation.
 
 Good uses:
 
@@ -187,18 +240,33 @@ Scale: ...
 
 Templates and examples live in `reference/`.
 
-## Codex Notes
+## Install Surface Notes
 
-- Skills live under `skills/` and are bundled by `.codex-plugin/plugin.json`.
-- The repo marketplace lives at `.agents/plugins/marketplace.json`.
-- `AGENTS.md` documents contribution expectations for Codex.
+- Shared metadata lives in `install-surfaces/manifest.json`.
+- Skill content lives under `skills/`.
+- Tool-specific install surfaces are generated by `scripts/sync-install-surfaces`.
+- `AGENTS.md` documents contribution expectations.
 - This plugin does not bundle hooks or rules by default. The workflow is guidance-oriented; add hooks only for deterministic enforcement.
-- Subagents are not auto-spawned by installing this plugin. Ask Codex explicitly when you want parallel agents.
-- Compatibility with other agents can be added later, but Codex remains the primary install surface for this fork.
+- Generated surfaces should be treated as build outputs checked into the repository for local installation.
+
+## Maintenance
+
+After changing canonical skill content, package metadata, or generated-surface rules:
+
+```bash
+scripts/sync-install-surfaces
+scripts/sync-install-surfaces --check
+```
+
+The repository hook at `.githooks/pre-commit` runs check mode. Install it locally only if you want Git to enforce generated-surface sync before commits:
+
+```bash
+git config core.hooksPath .githooks
+```
 
 ## Credits
 
-Based on the original `interface-design` / `claude-design-skill` work by Damola Akinleye, adapted here for OpenAI Codex-first usage.
+Based on the original `interface-design` / `claude-design-skill` work by Damola Akinleye, adapted here for multi-surface agent usage.
 
 ## License
 

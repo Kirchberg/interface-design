@@ -1,0 +1,36 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "interface-design",
+  "metadata": {
+    "description": "Claude Code install surface for Interface Design. Generated from the same manifest and skill source as other surfaces."
+  },
+  "owner": {
+    "name": "Kirchberg",
+    "url": "https://github.com/Kirchberg"
+  },
+  "plugins": [
+    {
+      "name": "interface-design",
+      "description": "Craft product interfaces with intent, memory, and consistency.",
+      "version": "2026.6.12.1248",
+      "author": {
+        "name": "Kirchberg",
+        "url": "https://github.com/Kirchberg"
+      },
+      "source": "./",
+      "category": "design",
+      "homepage": "https://github.com/Kirchberg/interface-design",
+      "tags": [
+        "design",
+        "design-system",
+        "ui",
+        "ux",
+        "craft",
+        "memory",
+        "consistency",
+        "tokens",
+        "install-surface"
+      ]
+    }
+  ]
+}

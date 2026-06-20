@@ -1,0 +1,14 @@
+{
+  "name": "interface-design",
+  "description": "Claude Code install surface for Interface Design. Generated from install-surfaces/manifest.json and skills/interface-design.",
+  "version": "2026.6.12.1248",
+  "author": {
+    "name": "Kirchberg",
+    "url": "https://github.com/Kirchberg"
+  },
+  "homepage": "https://github.com/Kirchberg/interface-design",
+  "repository": "https://github.com/Kirchberg/interface-design",
+  "license": "MIT",
+  "commands": "./.claude/commands",
+  "skills": "./.claude/skills"
+}
